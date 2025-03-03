@@ -1,0 +1,27 @@
+python -m venv venv
+
+На Windows
+venv\Scripts\activate
+
+На macOS и Linux:
+source venv/bin/activate
+
+pip install Flask Flask-SQLAlchemy Flask-WTF
+
+1 на process_video добавить кнопку которая вызывает python скипт, который
+пишет тестовые данные в таблицу
+
+model_name
+detection_datetime (текущее дата и время)
+image_name
+video_name
+folger
+class_name
+processing_number
+
+тестовые данные
+
+2. в found_images добавить таблицу с данными из новой таблицы
+
+1. добавить в DetectedObject поле description
+2. add_test_data переемоновать в "video_file_processing"

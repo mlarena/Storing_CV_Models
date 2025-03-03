@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Обработка видео{% endblock %}
+
+{% block content %}
+    <h1>Обработка видео</h1>
+    <div class="form-group">
+        <label for="file_select">Выберите файл для обработки</label>
+        <select id="file_select" class="form-control" onchange="updateFileInfo()">
+            <option value="">-- Выберите файл --</option>
+            {% for file in files %}
+                <option value="{{ file.id }}">{{ file.model_name }} - {{ file.filename_without_guid }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label id="file_info">Информация о файле: </label>
+    </div>
+    <form method="POST" action="{{ url_for('video_file_processing') }}">
+        <button type="submit" class="btn btn-primary">Добавить тестовые данные</button>
+    </form>
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('process_video') }}">
+        <div class="form-group">
+            <label for="video_file">Загрузить видео файл</label>
+            <input type="file" id="video_file" name="video_file" class="form-control" accept="video/*">
+        </div>
+        <button type="submit" class="btn btn-primary">Загрузить видео</button>
+    </form>
+    
+    <script>
+        function updateFileInfo() {
+            var select = document.getElementById('file_select');
+            var selectedId = select.value;
+            var infoLabel = document.getElementById('file_info');
+            
+            if (!selectedId) {
+                infoLabel.textContent = 'Информация о файле: ';
+                return;
+            }
+
+            var files = [
+                {% for file in files %}
+                {
+                    id: {{ file.id }},
+                    model_name: "{{ file.model_name }}",
+                    version: "{{ file.version }}",
+                    task_type: "{{ file.task_type }}",
+                    description: "{{ file.description }}",
+                    en_classes: "{{ file.en_classes }}",
+                    ru_classes: "{{ file.ru_classes }}",
+                    colors: "{{ file.colors }}",
+                    filename: "{{ file.filename_without_guid }}",
+                    upload_datetime: "{{ file.upload_datetime.strftime('%Y-%m-%d %H:%M:%S') }}"
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+            ];
+
+            var selectedFile = files.find(function(file) {
+                return file.id == selectedId;
+            });
+
+            if (selectedFile) {
+                infoLabel.textContent = 'Информация о файле: ' +
+                    'Название модели: ' + selectedFile.model_name + ', ' +
+                    'Версия: ' + selectedFile.version + ', ' +
+                    'Тип задачи: ' + selectedFile.task_type + ', ' +
+                    'Описание: ' + selectedFile.description + ', ' +
+                    'Классы (EN): ' + selectedFile.en_classes + ', ' +
+                    'Классы (RU): ' + selectedFile.ru_classes + ', ' +
+                    'Цвета: ' + selectedFile.colors + ', ' +
+                    'Имя файла: ' + selectedFile.filename + ', ' +
+                    'Дата загрузки: ' + selectedFile.upload_datetime;
+            }
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Найденные изображения{% endblock %}
+
+{% block content %}
+    <h1>Найденные изображения</h1>
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>Название модели</th>
+                <th>Дата обнаружения</th>
+                <th>Имя изображения</th>
+                <th>Имя видео</th>
+                <th>Папка</th>
+                <th>Название класса</th>
+                <th>Номер обработки</th>
+                <th>Описание</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for obj in detected_objects %}
+            <tr>
+                <td>{{ obj.model_name }}</td>
+                <td>{{ obj.detection_datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ obj.image_name }}</td>
+                <td>{{ obj.video_name }}</td>
+                <td>{{ obj.folder }}</td>
+                <td>{{ obj.class_name }}</td>
+                <td>{{ obj.processing_number }}</td>
+                <td>{{ obj.description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

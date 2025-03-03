@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Загрузить файл{% endblock %}
+
+{% block content %}
+    <h1>Загрузить файл</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <div class="filter-container">
+            <div class="form-group compact">
+                {{ form.model_name.label("Название модели") }}
+                {{ form.model_name(class="form-control compact-input") }}
+            </div>
+            <div class="form-group compact">
+                {{ form.version.label("Версия") }}
+                {{ form.version(class="form-control compact-input") }}
+            </div>
+            <div class="form-group compact">
+                {{ form.task_type.label("Тип задачи") }}
+                {{ form.task_type(class="form-control compact-input") }}
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form.file.label("Выберите файл") }}
+            {{ form.file(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.description.label("Описание") }}
+            {{ form.description(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.en_classes.label("Классы на английском") }}
+            {{ form.en_classes(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.ru_classes.label("Классы на русском") }}
+            {{ form.ru_classes(class="form-control") }}
+        </div>
+        <div class="form-group">
+            {{ form.colors.label("Цвета") }}
+            {{ form.colors(class="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Загрузить</button>
+    </form>
+{% endblock %}

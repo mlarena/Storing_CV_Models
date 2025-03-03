@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Просмотр файлов{% endblock %}
+
+{% block content %}
+    <h1>Просмотр файлов</h1>
+    <form method="GET" action="{{ url_for('view_files') }}">
+        <div class="filter-container">
+            <div class="form-group compact">
+                <label for="model_name">Название модели</label>
+                <input type="text" id="model_name" name="model_name" class="form-control compact-input" value="">
+            </div>
+            <div class="form-group compact">
+                <label for="version">Версия</label>
+                <select id="version" name="version" class="form-control compact-input">
+                    <option value="">Все</option>
+                    <option value="8" {% if request.args.get('version') == '8' %}selected{% endif %}>8</option>
+                    <option value="9" {% if request.args.get('version') == '9' %}selected{% endif %}>9</option>
+                    <option value="10" {% if request.args.get('version') == '10' %}selected{% endif %}>10</option>
+                    <option value="11" {% if request.args.get('version') == '11' %}selected{% endif %}>11</option>
+                    <option value="12" {% if request.args.get('version') == '12' %}selected{% endif %}>12</option>
+                </select>
+            </div>
+            <div class="form-group compact">
+                <label for="task_type">Тип задачи</label>
+                <select id="task_type" name="task_type" class="form-control compact-input">
+                    <option value="">Все</option>
+                    <option value="Detect" {% if request.args.get('task_type') == 'Detect' %}selected{% endif %}>Обнаружение</option>
+                    <option value="OBB" {% if request.args.get('task_type') == 'OBB' %}selected{% endif %}>OBB</option>
+                    <option value="Segment" {% if request.args.get('task_type') == 'Segment' %}selected{% endif %}>Сегментация</option>
+                    <option value="Classify" {% if request.args.get('task_type') == 'Classify' %}selected{% endif %}>Классификация</option>
+                    <option value="Pose" {% if request.args.get('task_type') == 'Pose' %}selected{% endif %}>Поза</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Фильтровать</button>
+        </div>
+    </form>
+    <table class="modern-table">
+        <thead>
+            <!-- Table headers remain the same -->
+            <tr>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='model_name', sort_dir='asc' if sort_by == 'model_name' and sort_dir == 'desc' else 'desc') }}">Название модели {% if sort_by == 'model_name' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='version', sort_dir='asc' if sort_by == 'version' and sort_dir == 'desc' else 'desc') }}">Версия {% if sort_by == 'version' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='task_type', sort_dir='asc' if sort_by == 'task_type' and sort_dir == 'desc' else 'desc') }}">Тип задачи {% if sort_by == 'task_type' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='description', sort_dir='asc' if sort_by == 'description' and sort_dir == 'desc' else 'desc') }}">Описание {% if sort_by == 'description' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='en_classes', sort_dir='asc' if sort_by == 'en_classes' and sort_dir == 'desc' else 'desc') }}">Классы (EN) {% if sort_by == 'en_classes' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='ru_classes', sort_dir='asc' if sort_by == 'ru_classes' and sort_dir == 'desc' else 'desc') }}">Классы (RU) {% if sort_by == 'ru_classes' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='colors', sort_dir='asc' if sort_by == 'colors' and sort_dir == 'desc' else 'desc') }}">Цвета {% if sort_by == 'colors' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='filename_without_guid', sort_dir='asc' if sort_by == 'filename_without_guid' and sort_dir == 'desc' else 'desc') }}">Имя файла {% if sort_by == 'filename_without_guid' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='upload_datetime', sort_dir='asc' if sort_by == 'upload_datetime' and sort_dir == 'desc' else 'desc') }}">Дата загрузки {% if sort_by == 'upload_datetime' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file.model_name }}</td>
+                <td>{{ file.version }}</td>
+                <td>{{ file.task_type }}</td>
+                <td>{{ file.description }}</td>
+                <td>{{ file.en_classes }}</td>
+                <td>{{ file.ru_classes }}</td>
+                <td>{{ file.colors }}</td>
+                <td>{{ file.filename_without_guid }}</td>
+                <td>{{ file.upload_datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>
+                    <a href="{{ url_for('download_file', file_id=file.id) }}" class="btn btn-primary btn-sm">Скачать</a>
+                    <form method="POST" action="{{ url_for('delete_file', file_id=file.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
