@@ -28,18 +28,6 @@
             {{ form.description.label("Описание") }}
             {{ form.description(class="form-control") }}
         </div>
-        <div class="form-group">
-            {{ form.en_classes.label("Классы на английском") }}
-            {{ form.en_classes(class="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ form.ru_classes.label("Классы на русском") }}
-            {{ form.ru_classes(class="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ form.colors.label("Цвета") }}
-            {{ form.colors(class="form-control") }}
-        </div>
         <button type="submit" class="btn btn-primary">Загрузить</button>
     </form>
 {% endblock %}

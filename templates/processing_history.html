@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}История обработки{% endblock %}
+
+{% block content %}
+    <h1>История обработки</h1>
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>Наименование модели</th>
+                <th>Имя видео</th>
+                <th>Дата и время начала</th>
+                <th>Время обработки (мин)</th>
+                <th>Количество объектов</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in history_entries %}
+            <tr>
+                <td>{{ entry.model_name }}</td>
+                <td>{{ entry.video_name }}</td>
+                <td>{{ entry.start_datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ (entry.processing_time / 60)|round(2) }}</td> <!-- Convert seconds to minutes -->
+                <td>{{ entry.object_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

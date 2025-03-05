@@ -4,73 +4,102 @@
 
 {% block content %}
     <h1>Обработка видео</h1>
-    <div class="form-group">
-        <label for="file_select">Выберите файл для обработки</label>
-        <select id="file_select" class="form-control" onchange="updateFileInfo()">
-            <option value="">-- Выберите файл --</option>
-            {% for file in files %}
-                <option value="{{ file.id }}">{{ file.model_name }} - {{ file.filename_without_guid }}</option>
-            {% endfor %}
-        </select>
-    </div>
-    <div class="form-group">
-        <label id="file_info">Информация о файле: </label>
-    </div>
-    <form method="POST" action="{{ url_for('video_file_processing') }}">
-        <button type="submit" class="btn btn-primary">Добавить тестовые данные</button>
-    </form>
-    <form method="POST" enctype="multipart/form-data" action="{{ url_for('process_video') }}">
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('process_video') }}" id="processForm">
+        <div class="form-group">
+            <label for="file_select">Выберите модель из uploading</label>
+            <select id="file_select" name="file_select" class="form-control">
+                <option value="">-- Выберите модель --</option>
+                {% for file in files %}
+                    <option value="{{ file.id }}">{{ file.model_name }} - {{ file.filename_without_guid }}</option>
+                {% endfor %}
+            </select>
+        </div>
         <div class="form-group">
             <label for="video_file">Загрузить видео файл</label>
             <input type="file" id="video_file" name="video_file" class="form-control" accept="video/*">
         </div>
-        <button type="submit" class="btn btn-primary">Загрузить видео</button>
+        <button type="submit" class="btn btn-primary" id="processButton">Обработать видео</button>
     </form>
-    
-    <script>
-        function updateFileInfo() {
-            var select = document.getElementById('file_select');
-            var selectedId = select.value;
-            var infoLabel = document.getElementById('file_info');
-            
-            if (!selectedId) {
-                infoLabel.textContent = 'Информация о файле: ';
-                return;
-            }
 
-            var files = [
-                {% for file in files %}
-                {
-                    id: {{ file.id }},
-                    model_name: "{{ file.model_name }}",
-                    version: "{{ file.version }}",
-                    task_type: "{{ file.task_type }}",
-                    description: "{{ file.description }}",
-                    en_classes: "{{ file.en_classes }}",
-                    ru_classes: "{{ file.ru_classes }}",
-                    colors: "{{ file.colors }}",
-                    filename: "{{ file.filename_without_guid }}",
-                    upload_datetime: "{{ file.upload_datetime.strftime('%Y-%m-%d %H:%M:%S') }}"
-                }{% if not loop.last %},{% endif %}
+    <!-- Progress Bar and Timer -->
+    <div id="progressContainer" style="display: none;">
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p id="progressText">Обработка видео... <span id="timer">0:00</span></p>
+    </div>
+
+    <!-- Success/Error Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashes">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
                 {% endfor %}
-            ];
+            </div>
+        {% endif %}
+    {% endwith %}
 
-            var selectedFile = files.find(function(file) {
-                return file.id == selectedId;
-            });
+    <!-- Class Summary -->
+    {% if class_summary %}
+    <div class="class-summary">
+        <h2>Сводка по классам</h2>
+        <p>
+            {% for class_name, count in class_summary.items() %}
+                {{ class_name }}: {{ count }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+            | Всего: {{ class_summary.values()|sum }}
+        </p>
+    </div>
+    {% endif %}
 
-            if (selectedFile) {
-                infoLabel.textContent = 'Информация о файле: ' +
-                    'Название модели: ' + selectedFile.model_name + ', ' +
-                    'Версия: ' + selectedFile.version + ', ' +
-                    'Тип задачи: ' + selectedFile.task_type + ', ' +
-                    'Описание: ' + selectedFile.description + ', ' +
-                    'Классы (EN): ' + selectedFile.en_classes + ', ' +
-                    'Классы (RU): ' + selectedFile.ru_classes + ', ' +
-                    'Цвета: ' + selectedFile.colors + ', ' +
-                    'Имя файла: ' + selectedFile.filename + ', ' +
-                    'Дата загрузки: ' + selectedFile.upload_datetime;
-            }
-        }
+    <!-- Detection Logs -->
+    {% if detection_logs %}
+    <h2>Лог обработки</h2>
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>Имя изображения</th>
+                <th>Название класса</th>
+                <th>Дата обнаружения</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in detection_logs %}
+            <tr>
+                <td>{{ log.image_name }}</td>
+                <td>{{ log.class_name }}</td>
+                <td>{{ log.detection_datetime }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <script>
+        document.getElementById('processForm').addEventListener('submit', function(e) {
+            document.getElementById('processButton').style.display = 'none';
+            document.getElementById('progressContainer').style.display = 'block';
+
+            let width = 0;
+            const progressBar = document.getElementById('progressBar');
+            const progressInterval = setInterval(() => {
+                if (width >= 90) {
+                    clearInterval(progressInterval);
+                } else {
+                    width += 1;
+                    progressBar.style.width = width + '%';
+                }
+            }, 100);
+
+            let seconds = 0;
+            const timerElement = document.getElementById('timer');
+            const timerInterval = setInterval(() => {
+                seconds++;
+                const minutes = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                timerElement.textContent = `${minutes}:${secs < 10 ? '0' + secs : secs}`;
+            }, 1000);
+        });
     </script>
 {% endblock %}

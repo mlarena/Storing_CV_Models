@@ -4,32 +4,100 @@
 
 {% block content %}
     <h1>Найденные изображения</h1>
+    <form method="GET" action="{{ url_for('found_images') }}">
+        <div class="filter-container">
+            <div class="form-group compact">
+                <label for="video_name">Имя видео</label>
+                <select id="video_name" name="video_name" class="form-control compact-input">
+                    <option value="">Все</option>
+                    {% for name in unique_video_names %}
+                        <option value="{{ name }}" {% if video_name_filter == name %}selected{% endif %}>{{ name.split('_', 1)[1] if '_' in name else name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group compact">
+                <label for="model_name">Название модели</label>
+                <select id="model_name" name="model_name" class="form-control compact-input">
+                    <option value="">Все</option>
+                    {% for name in unique_model_names %}
+                        <option value="{{ name }}" {% if model_name_filter == name %}selected{% endif %}>{{ name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group compact">
+                <label for="upload_id">ID загрузки</label>
+                <select id="upload_id" name="upload_id" class="form-control compact-input">
+                    <option value="">Все</option>
+                    {% for id in unique_upload_ids %}
+                        <option value="{{ id }}" {% if upload_id_filter == id|string %}selected{% endif %}>{{ id }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" name="filter" value="true" class="btn btn-primary">Фильтровать</button>
+        </div>
+    </form>
+    {% if show_results %}
     <table class="modern-table">
         <thead>
             <tr>
-                <th>Название модели</th>
-                <th>Дата обнаружения</th>
-                <th>Имя изображения</th>
-                <th>Имя видео</th>
-                <th>Папка</th>
+                <th>Изображение</th>
                 <th>Название класса</th>
                 <th>Номер обработки</th>
                 <th>Описание</th>
+                <th>ID загрузки</th>
+                <th>Название модели</th>
+                <th>Дата обнаружения</th>
+                <th>Имя видео</th>
             </tr>
         </thead>
         <tbody>
             {% for obj in detected_objects %}
             <tr>
-                <td>{{ obj.model_name }}</td>
-                <td>{{ obj.detection_datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                <td>{{ obj.image_name }}</td>
-                <td>{{ obj.video_name }}</td>
-                <td>{{ obj.folder }}</td>
+                <td>
+                    <img src="{{ url_for('serve_result_image', filename=obj.image_name) }}" 
+                         alt="{{ obj.image_name }}" 
+                         style="max-width: 100px; height: auto; cursor: pointer;" 
+                         onclick="showModal('{{ url_for('serve_result_image', filename=obj.image_name) }}')">
+                </td>
                 <td>{{ obj.class_name }}</td>
                 <td>{{ obj.processing_number }}</td>
                 <td>{{ obj.description }}</td>
+                <td>{{ obj.uploaded_file_id }}</td>
+                <td>{{ obj.uploaded_file.model_name }}</td>
+                <td>{{ obj.detection_datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ obj.video_name.split('_', 1)[1] if '_' in obj.video_name else obj.video_name }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+    {% endif %}
+
+    <!-- Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">×</span>
+            <img id="modalImage" src="" alt="Большое изображение" style="max-width: 100%; height: auto;">
+        </div>
+    </div>
+
+    <script>
+        function showModal(imageSrc) {
+            const modal = document.getElementById('imageModal');
+            const modalImg = document.getElementById('modalImage');
+            modal.style.display = 'block';
+            modalImg.src = imageSrc;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('imageModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
 {% endblock %}

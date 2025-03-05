@@ -2,6 +2,7 @@ python -m venv venv
 
 На Windows
 venv\Scripts\activate
+venv\Scripts\deactivate
 
 На macOS и Linux:
 source venv/bin/activate
@@ -25,3 +26,5 @@ processing_number
 
 1. добавить в DetectedObject поле description
 2. add_test_data переемоновать в "video_file_processing"
+
+https://grok.com/chat/4d2eac17-b2bd-4e46-9e1c-f2f9a81f5b15

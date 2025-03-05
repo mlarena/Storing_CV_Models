@@ -8,7 +8,12 @@
         <div class="filter-container">
             <div class="form-group compact">
                 <label for="model_name">Название модели</label>
-                <input type="text" id="model_name" name="model_name" class="form-control compact-input" value="">
+                <input type="text" id="model_name" name="model_name" class="form-control compact-input" value="" list="model_names" autocomplete="off">
+                <datalist id="model_names">
+                    {% for name in unique_model_names %}
+                        <option value="{{ name }}">
+                    {% endfor %}
+                </datalist>
             </div>
             <div class="form-group compact">
                 <label for="version">Версия</label>
@@ -37,15 +42,12 @@
     </form>
     <table class="modern-table">
         <thead>
-            <!-- Table headers remain the same -->
             <tr>
+                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='id', sort_dir='asc' if sort_by == 'id' and sort_dir == 'desc' else 'desc') }}">ID загрузки {% if sort_by == 'id' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
                 <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='model_name', sort_dir='asc' if sort_by == 'model_name' and sort_dir == 'desc' else 'desc') }}">Название модели {% if sort_by == 'model_name' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
                 <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='version', sort_dir='asc' if sort_by == 'version' and sort_dir == 'desc' else 'desc') }}">Версия {% if sort_by == 'version' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
                 <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='task_type', sort_dir='asc' if sort_by == 'task_type' and sort_dir == 'desc' else 'desc') }}">Тип задачи {% if sort_by == 'task_type' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
                 <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='description', sort_dir='asc' if sort_by == 'description' and sort_dir == 'desc' else 'desc') }}">Описание {% if sort_by == 'description' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
-                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='en_classes', sort_dir='asc' if sort_by == 'en_classes' and sort_dir == 'desc' else 'desc') }}">Классы (EN) {% if sort_by == 'en_classes' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
-                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='ru_classes', sort_dir='asc' if sort_by == 'ru_classes' and sort_dir == 'desc' else 'desc') }}">Классы (RU) {% if sort_by == 'ru_classes' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
-                <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='colors', sort_dir='asc' if sort_by == 'colors' and sort_dir == 'desc' else 'desc') }}">Цвета {% if sort_by == 'colors' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
                 <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='filename_without_guid', sort_dir='asc' if sort_by == 'filename_without_guid' and sort_dir == 'desc' else 'desc') }}">Имя файла {% if sort_by == 'filename_without_guid' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
                 <th><a href="{{ url_for('view_files', model_name=request.args.get('model_name'), version=request.args.get('version'), task_type=request.args.get('task_type'), sort_by='upload_datetime', sort_dir='asc' if sort_by == 'upload_datetime' and sort_dir == 'desc' else 'desc') }}">Дата загрузки {% if sort_by == 'upload_datetime' %}{{ '↑' if sort_dir == 'asc' else '↓' }}{% endif %}</a></th>
                 <th>Действия</th>
@@ -54,13 +56,11 @@
         <tbody>
             {% for file in files %}
             <tr>
+                <td>{{ file.id }}</td>
                 <td>{{ file.model_name }}</td>
                 <td>{{ file.version }}</td>
                 <td>{{ file.task_type }}</td>
                 <td>{{ file.description }}</td>
-                <td>{{ file.en_classes }}</td>
-                <td>{{ file.ru_classes }}</td>
-                <td>{{ file.colors }}</td>
                 <td>{{ file.filename_without_guid }}</td>
                 <td>{{ file.upload_datetime.strftime('%Y-%m-%d %H:%M:%S') }}</td>
                 <td>

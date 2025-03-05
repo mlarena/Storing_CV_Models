@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}File Upload App{% endblock %}</title>
+    <title>{% block title %}Нейросеть. Тестирование обработки видео.{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <script>
         function toggleMenu() {
-            var menu = document.getElementById('sidebar');
+            var sidebar = document.getElementById('sidebar');
             var content = document.getElementById('content');
-            if (menu.style.display === 'none') {
-                menu.style.display = 'block';
+            if (sidebar.style.left === '-250px' || sidebar.style.left === '') {
+                sidebar.style.left = '0';
                 content.style.marginLeft = '250px';
             } else {
-                menu.style.display = 'none';
+                sidebar.style.left = '-250px';
                 content.style.marginLeft = '0';
             }
         }
@@ -21,22 +22,23 @@
 </head>
 <body>
     <header>
-        <h1>File Upload App</h1>
-    </header>
-    <div id="sidebar" style="display: block;">
+        <h1>Нейросеть. Тестирование обработки видео.</h1>
         <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    </header>
+    <div id="sidebar">
         <nav>
             <ul>
-                <li><a href="{{ url_for('index') }}" class="{% if current_page == 'index' %}active{% endif %}">Index</a></li>
-                <li><a href="{{ url_for('upload_file') }}" class="{% if current_page == 'upload' %}active{% endif %}">Upload File</a></li>
-                <li><a href="{{ url_for('view_files') }}" class="{% if current_page == 'view' %}active{% endif %}">View Files</a></li>
-                <li><a href="{{ url_for('process_video') }}" class="{% if current_page == 'process_video' %}active{% endif %}">Process Video</a></li>
-                <li><a href="{{ url_for('reports') }}" class="{% if current_page == 'reports' %}active{% endif %}">Reports</a></li>
-                <li><a href="{{ url_for('found_images') }}" class="{% if current_page == 'found_images' %}active{% endif %}">Found Images</a></li>
+                <li><a href="{{ url_for('index') }}" class="{% if current_page == 'index' %}active{% endif %}">Главная страница</a></li>
+                <li><a href="{{ url_for('upload_file') }}" class="{% if current_page == 'upload' %}active{% endif %}">Загрузка моделей</a></li>
+                <li><a href="{{ url_for('view_files') }}" class="{% if current_page == 'view' %}active{% endif %}">Модели</a></li>
+                <li><a href="{{ url_for('process_video') }}" class="{% if current_page == 'process_video' %}active{% endif %}">Обработка видео</a></li>
+                <li><a href="{{ url_for('reports') }}" class="{% if current_page == 'reports' %}active{% endif %}">Отчеты</a></li>
+                <li><a href="{{ url_for('found_images') }}" class="{% if current_page == 'found_images' %}active{% endif %}">Найденные изображения</a></li>
+                <li><a href="{{ url_for('processing_history') }}" class="{% if current_page == 'processing_history' %}active{% endif %}">История обработки</a></li>
             </ul>
         </nav>
     </div>
-    <div id="content" style="margin-left: 250px;">
+    <div id="content">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flashes">
@@ -49,7 +51,7 @@
         {% block content %}{% endblock %}
     </div>
     <footer>
-        <p>© 2023 File Upload App. All rights reserved.</p>
+        <p>© 2023 Нейросеть. Тестирование обработки видео. All rights reserved.</p>
     </footer>
 </body>
 </html>

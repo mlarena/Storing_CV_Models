@@ -1,5 +1,20 @@
-# Игнорировать папку __pycache__ и её содержимое
+# Игнорировать папку __pycache__
 __pycache__/
 
-# Игнорировать папку venv и её содержимое
+# Игнорировать папку ven
 venv/
+
+# Игнорировать все содержимое папки RESULT_FOLDER, кроме файла info.txt
+RESULT_FOLDER/*
+!RESULT_FOLDER/info.txt
+
+# Игнорировать все содержимое папки uploading, кроме файла info.txt
+uploading/*
+!uploading/info.txt
+
+# Игнорировать все содержимое папки video_folder, кроме файла info.txt
+video_folder/*
+!video_folder/info.txt
+
+# Игнорировать файл cmd.txt
+cmd.txt
