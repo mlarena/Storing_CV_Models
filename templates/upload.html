@@ -1,33 +1,54 @@
 {% extends 'base.html' %}
 
-{% block title %}Загрузить файл{% endblock %}
+{% block title %}Загрузка обученной модели{% endblock %}
 
 {% block content %}
-    <h1>Загрузить файл</h1>
+    <h1>Загрузка обученной модели</h1>
     <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
-        <div class="filter-container">
-            <div class="form-group compact">
-                {{ form.model_name.label("Название модели") }}
-                {{ form.model_name(class="form-control compact-input") }}
-            </div>
-            <div class="form-group compact">
-                {{ form.version.label("Версия") }}
-                {{ form.version(class="form-control compact-input") }}
-            </div>
-            <div class="form-group compact">
-                {{ form.task_type.label("Тип задачи") }}
-                {{ form.task_type(class="form-control compact-input") }}
-            </div>
-        </div>
-        <div class="form-group">
-            {{ form.file.label("Выберите файл") }}
-            {{ form.file(class="form-control") }}
-        </div>
-        <div class="form-group">
-            {{ form.description.label("Описание") }}
-            {{ form.description(class="form-control") }}
-        </div>
-        <button type="submit" class="btn btn-primary">Загрузить</button>
+        <table class="form-table">
+            <tr>
+                <td colspan="2"> <!-- File upload spans both columns -->
+                    {{ form.file(class="form-control", style="width: 500px;") }}
+                </td>
+            </tr>
+            <tr>
+                <td class="label-column">
+                    <label for="model_name">Название модели</label>
+                </td>
+                <td class="input-column">
+                    {{ form.model_name(class="form-control", style="width: 500px;") }}
+                </td>
+            </tr>
+            <tr>
+                <td class="label-column">
+                    <label for="version">Версия Yolo</label>
+                </td>
+                <td class="input-column">
+                    {{ form.version(class="form-control", style="width: 500px;") }}
+                </td>
+            </tr>
+            <tr>
+                <td class="label-column">
+                    <label for="task_type">Тип детекции</label>
+                </td>
+                <td class="input-column">
+                    {{ form.task_type(class="form-control", style="width: 500px;") }}
+                </td>
+            </tr>
+            <tr>
+                <td class="label-column">
+                    <label for="description">Описание</label>
+                </td>
+                <td class="input-column">
+                    {{ form.description(class="form-control", style="width: 500px;") }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;"> <!-- Button centered across both columns -->
+                    <button type="submit" class="btn btn-primary">Загрузить</button>
+                </td>
+            </tr>
+        </table>
     </form>
 {% endblock %}

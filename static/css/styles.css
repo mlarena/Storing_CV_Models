@@ -116,11 +116,23 @@ header h1 {
 
 .modern-table th {
     background: linear-gradient(90deg, #2c3e50, #34495e);
-    color: white;
+    color: white !important;
     padding: 1rem;
     font-size: 14px;
     text-align: left;
     font-weight: 600;
+}
+
+/* Table Link Styles */
+.modern-table th a.table-link {
+    color: white; /* Change link color to white */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.modern-table th a.table-link:hover {
+    color: #ecf0f1; /* Slightly lighter white on hover for feedback */
+    text-decoration: underline;
 }
 
 .modern-table td {
@@ -365,4 +377,65 @@ footer {
 .close:hover,
 .close:focus {
     color: #333;
+}
+
+/* Filter Container */
+.filter-container {
+    display: flex;
+    align-items: flex-end; /* Align items at the bottom to prevent overlap with labels */
+    gap: 1rem; /* Increased gap for better spacing */
+    padding: 0.5rem;
+    border: 1px solid #d1d9e6;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background-color: #fff;
+    flex-wrap: wrap; /* Allow wrapping if needed */
+    width: 100%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.filter-container .form-group.compact {
+    margin-bottom: 0;
+    flex: 0 0 auto;
+    min-width: 100px; /* Minimum width to prevent squashing */
+}
+
+.filter-container .compact-input {
+    width: 100%;
+    padding: 0.4rem;
+    font-size: 13px;
+    height: 34px;
+    box-sizing: border-box;
+}
+
+/* Filter Table Styles */
+.filter-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    background-color: #fff;
+    border: 1px solid #d1d9e6;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.filter-table td {
+    padding: 0.5rem;
+    vertical-align: bottom; /* Align inputs at the bottom */
+}
+
+.filter-table .form-group.compact {
+    margin-bottom: 0;
+}
+
+.filter-table .compact-input {
+    width: 100%;
+    padding: 0.4rem;
+    font-size: 13px;
+    height: 34px;
+    box-sizing: border-box;
+}
+
+.filter-table .filter-button {
+    padding-top: 1.5rem; /* Align button with input bottoms */
 }

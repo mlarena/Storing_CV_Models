@@ -9,22 +9,10 @@ source venv/bin/activate
 
 pip install Flask Flask-SQLAlchemy Flask-WTF
 
-1 на process_video добавить кнопку которая вызывает python скипт, который
-пишет тестовые данные в таблицу
-
-model_name
-detection_datetime (текущее дата и время)
-image_name
-video_name
-folger
-class_name
-processing_number
-
-тестовые данные
-
-2. в found_images добавить таблицу с данными из новой таблицы
-
-1. добавить в DetectedObject поле description
-2. add_test_data переемоновать в "video_file_processing"
+# YOLOv n (Nano) — самая маленькая и быстрая модель, предназначенная для использования на мобильных устройствах и в средах с ограниченными ресурсами.
+# YOLOv s (Small) — немного больше и точнее, чем Nano, но все еще достаточно быстрая для использования в реальном времени.
+# YOLOv m (Medium) — баланс между скоростью и точностью, подходит для большинства приложений.
+# YOLOv l (Large) — большая модель с высокой точностью, но требует больше вычислительных ресурсов.
+# YOLOv x (Extra Large) — самая большая и точная модель, предназначенная для использования на мощных GPU.
 
 https://grok.com/chat/4d2eac17-b2bd-4e46-9e1c-f2f9a81f5b15

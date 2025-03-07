@@ -10,7 +10,7 @@
         function toggleMenu() {
             var sidebar = document.getElementById('sidebar');
             var content = document.getElementById('content');
-            if (sidebar.style.left === '-250px' || sidebar.style.left === '') {
+            if (sidebar.style.left === '-250px') {
                 sidebar.style.left = '0';
                 content.style.marginLeft = '250px';
             } else {
@@ -25,7 +25,7 @@
         <h1>Нейросеть. Тестирование обработки видео.</h1>
         <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     </header>
-    <div id="sidebar">
+    <div id="sidebar" style="left: 0;"> <!-- Sidebar visible by default -->
         <nav>
             <ul>
                 <li><a href="{{ url_for('index') }}" class="{% if current_page == 'index' %}active{% endif %}">Главная страница</a></li>
@@ -38,7 +38,7 @@
             </ul>
         </nav>
     </div>
-    <div id="content">
+    <div id="content" style="margin-left: 250px;"> <!-- Content adjusted for visible sidebar -->
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div class="flashes">
