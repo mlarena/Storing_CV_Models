@@ -14,6 +14,8 @@ import time
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your_secret_key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///uploads.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///instance/uploads.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'uploading'
 app.config['VIDEO_FOLDER'] = 'video_folder'
 app.config['RESULT_FOLDER'] = 'RESULT_FOLDER'
@@ -201,6 +203,23 @@ def view_files():
         unique_model_names=unique_model_names
     )
 
+@app.route('/edit_file/<int:file_id>', methods=['GET', 'POST'])
+def edit_file(file_id):
+    file = UploadedFile.query.get_or_404(file_id)
+    if request.method == 'POST':
+        file.model_name = request.form['model_name']
+        file.version = request.form['version']
+        file.task_type = request.form['task_type']
+        file.description = request.form['description']
+        try:
+            db.session.commit()
+            flash('Данные файла успешно обновлены', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Ошибка при обновлении данных: {e}', 'danger')
+        return redirect(url_for('view_files'))
+    return render_template('view.html', files=UploadedFile.query.all(), edit_file=file, current_page='view')
+
 @app.route('/download/<int:file_id>')
 def download_file(file_id):
     uploaded_file = UploadedFile.query.get_or_404(file_id)
@@ -263,6 +282,12 @@ def process_video():
                 )
                 db.session.add(history_entry)
                 db.session.commit()
+                # Delete the video file after successful processing
+                try:
+                    os.remove(video_path)
+                    flash(f'Видео файл {video_filename} удален после обработки.', 'info')
+                except OSError as e:
+                    flash(f'Ошибка при удалении видео файла: {e}', 'danger')
         else:
             flash('Ошибка: выбранная модель не найдена', 'danger')
 

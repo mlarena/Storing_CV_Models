@@ -15,4 +15,16 @@ pip install Flask Flask-SQLAlchemy Flask-WTF
 # YOLOv l (Large) — большая модель с высокой точностью, но требует больше вычислительных ресурсов.
 # YOLOv x (Extra Large) — самая большая и точная модель, предназначенная для использования на мощных GPU.
 
+docker build -t flask-video-app .
+
+docker run -d -p 5000:5000 \
+    -v $(pwd)/instance:/app/instance \
+    -v $(pwd)/uploading:/app/uploading \
+    -v $(pwd)/video_folder:/app/video_folder \
+    -v $(pwd)/RESULT_FOLDER:/app/RESULT_FOLDER \
+    flask-video-app
+
+docker ps  # List running containers to find the CONTAINER_ID
+docker stop <CONTAINER_ID>
+
 https://grok.com/chat/4d2eac17-b2bd-4e46-9e1c-f2f9a81f5b15

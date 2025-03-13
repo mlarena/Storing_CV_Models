@@ -39,7 +39,7 @@
                     </select>
                 </td>
                 <td class="form-group compact filter-button">
-                    <button type="submit" class="btn btn-primary">Фильтровать</button> <!-- Removed margin-top -->
+                    <button type="submit" class="btn btn-primary">Фильтровать</button>
                 </td>
             </tr>
         </table>
@@ -72,9 +72,74 @@
                     <form method="POST" action="{{ url_for('delete_file', file_id=file.id) }}" style="display:inline;">
                         <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить этот файл?');">Удалить</button>
                     </form>
+                    <button class="btn btn-warning btn-sm" onclick="openEditModal({{ file.id }}, '{{ file.model_name }}', '{{ file.version }}', '{{ file.task_type }}', '{{ file.description|replace('\n', '\\n') }}')">Редактировать</button>
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <!-- Modal for Editing -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Редактировать модель</h2>
+            <form method="POST" action="" id="editForm">
+                <input type="hidden" name="file_id" id="edit_file_id">
+                <div class="form-group">
+                    <label for="edit_model_name">Название модели</label>
+                    <input type="text" id="edit_model_name" name="model_name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_version">Версия</label>
+                    <select id="edit_version" name="version" class="form-control" required>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_task_type">Тип задачи</label>
+                    <select id="edit_task_type" name="task_type" class="form-control" required>
+                        <option value="Detect">Обнаружение</option>
+                        <option value="OBB">OBB</option>
+                        <option value="Segment">Сегментация</option>
+                        <option value="Classify">Классификация</option>
+                        <option value="Pose">Поза</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit_description">Описание</label>
+                    <textarea id="edit_description" name="description" class="form-control" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(fileId, modelName, version, taskType, description) {
+            document.getElementById('editModal').style.display = 'block';
+            document.getElementById('edit_file_id').value = fileId;
+            document.getElementById('edit_model_name').value = modelName;
+            document.getElementById('edit_version').value = version;
+            document.getElementById('edit_task_type').value = taskType;
+            document.getElementById('edit_description').value = description.replace(/\\n/g, '\n');
+            document.getElementById('editForm').action = '/edit_file/' + fileId;
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            var modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
 {% endblock %}
